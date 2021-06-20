@@ -1,6 +1,6 @@
 //
 //  SceneDelegate.swift
-//  Weather
+//  WeatherBuddy
 //
 //  Created by David Warner on 6/19/21.
 //
