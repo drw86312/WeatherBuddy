@@ -8,6 +8,8 @@
 import UIKit
 
 class WeatherDetailViewController: UIViewController {
+    
+    var model: WeatherFeedCellDisplayable?
 
     override func viewDidLoad() {
         super.viewDidLoad()

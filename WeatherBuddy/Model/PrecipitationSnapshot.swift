@@ -8,17 +8,17 @@
 import Foundation
 
 struct PrecipitationSnapshot: Codable {
-    let time: Int?
+    let now: Date?
     let precipitation: Double?
     
     enum CodingKeys: String, CodingKey {
-        case time = "dt"
+        case now = "dt"
         case precipitation
     }
     
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        time = try values.decodeIfPresent(Int.self, forKey: .time)
+        now = try values.decodeIfPresent(Int.self, forKey: .now)?.date
         precipitation = try values.decodeIfPresent(Double.self, forKey: .precipitation)
     }
 }

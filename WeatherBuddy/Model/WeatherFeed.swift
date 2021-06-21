@@ -41,3 +41,17 @@ struct WeatherFeed: Codable {
     }
 }
 
+struct Coordinate {
+    let latitude: Double
+    let longitude: Double
+}
+
+extension WeatherFeed {
+    
+    var coordinate: Coordinate? {
+        guard let latitude = latitude, let longitude = longitude else {
+            return nil
+        }
+        return Coordinate(latitude: latitude, longitude: longitude)
+    }
+}

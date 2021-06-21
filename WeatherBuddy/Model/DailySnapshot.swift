@@ -17,9 +17,9 @@ struct DayValue: Codable {
 }
 
 struct DailySnapshot: Codable {
-    let currentTime: Int?
-    let sunriseTime: Int?
-    let sunsetTime: Int?
+    let now: Date?
+    let sunrise: Date?
+    let sunset: Date?
     let moonriseTime: Int?
     let moonsetTime: Int?
     let temperature: DayValue?
@@ -35,9 +35,9 @@ struct DailySnapshot: Codable {
     let weatherConditions: [WeatherCondition]?
 
     enum CodingKeys: String, CodingKey {
-        case currentTime = "dt"
-        case sunriseTime = "sunrise"
-        case sunsetTime = "sunset"
+        case now = "dt"
+        case sunrise
+        case sunset
         case moonriseTime = "moonrise"
         case moonsetTime = "moonset"
         case temperature = "temp"
@@ -55,9 +55,9 @@ struct DailySnapshot: Codable {
     
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        currentTime = try values.decodeIfPresent(Int.self, forKey: .currentTime)
-        sunriseTime = try values.decodeIfPresent(Int.self, forKey: .sunriseTime)
-        sunsetTime = try values.decodeIfPresent(Int.self, forKey: .sunsetTime)
+        now = try values.decodeIfPresent(Int.self, forKey: .now)?.date
+        sunrise = try values.decodeIfPresent(Int.self, forKey: .sunrise)?.date
+        sunset = try values.decodeIfPresent(Int.self, forKey: .sunset)?.date
         moonriseTime = try values.decodeIfPresent(Int.self, forKey: .moonriseTime)
         moonsetTime = try values.decodeIfPresent(Int.self, forKey: .moonsetTime)
         temperature = try values.decodeIfPresent(DayValue.self, forKey: .temperature)

@@ -21,3 +21,13 @@ struct WeatherCondition: Codable {
         icon = try values.decodeIfPresent(String.self, forKey: .icon)
     }
 }
+
+extension WeatherCondition {
+    
+    var iconURL: URL? {
+        guard let icon = icon else { return nil }
+        let urlString = "http://openweathermap.org/img/wn/\(icon)@2x.png"
+        guard let url = URL(string: urlString) else { return nil }
+        return url
+    }
+}

@@ -8,9 +8,9 @@
 import Foundation
 
 struct CurrentSnapshot: Codable {
-    let currentTime: Int?
-    let sunriseTime: Int?
-    let sunsetTime: Int?
+    let now: Date?
+    let sunrise: Date?
+    let sunset: Date?
     let temperature: Double?
     let feelsLike: Double?
     let pressure: Int?
@@ -24,9 +24,9 @@ struct CurrentSnapshot: Codable {
     let weatherConditions: [WeatherCondition]?
 
     enum CodingKeys: String, CodingKey {
-        case currentTime = "dt"
-        case sunriseTime = "sunrise"
-        case sunsetTime = "sunset"
+        case now = "dt"
+        case sunrise
+        case sunset
         case temperature = "temp"
         case feelsLike = "feels_like"
         case pressure
@@ -42,9 +42,9 @@ struct CurrentSnapshot: Codable {
     
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        currentTime = try values.decodeIfPresent(Int.self, forKey: .currentTime)
-        sunriseTime = try values.decodeIfPresent(Int.self, forKey: .sunriseTime)
-        sunsetTime = try values.decodeIfPresent(Int.self, forKey: .sunsetTime)
+        now = try values.decodeIfPresent(Int.self, forKey: .now)?.date
+        sunrise = try values.decodeIfPresent(Int.self, forKey: .sunrise)?.date
+        sunset = try values.decodeIfPresent(Int.self, forKey: .sunset)?.date
         temperature = try values.decodeIfPresent(Double.self, forKey: .temperature)
         feelsLike = try values.decodeIfPresent(Double.self, forKey: .feelsLike)
         pressure = try values.decodeIfPresent(Int.self, forKey: .pressure)

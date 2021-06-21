@@ -16,28 +16,55 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="hZW-Qf-Eh0">
-                                <rect key="frame" x="0.0" y="88" width="414" height="774"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Knn-Tf-sYI">
-                                    <size key="itemSize" width="128" height="128"/>
-                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                </collectionViewFlowLayout>
-                                <cells/>
-                            </collectionView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="dNF-Ud-wg0">
+                                <rect key="frame" x="16" y="88" width="382" height="774"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RsM-9D-hZf">
+                                        <rect key="frame" x="0.0" y="0.0" width="382" height="60"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="60" id="kxZ-hM-Wv8"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="hZW-Qf-Eh0">
+                                        <rect key="frame" x="0.0" y="60" width="382" height="670"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Knn-Tf-sYI">
+                                            <size key="itemSize" width="128" height="128"/>
+                                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                        </collectionViewFlowLayout>
+                                        <cells/>
+                                    </collectionView>
+                                    <pageControl opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="fk0-s4-eCE">
+                                        <rect key="frame" x="0.0" y="730" width="382" height="44"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="44" id="9cR-Hl-SD2"/>
+                                        </constraints>
+                                    </pageControl>
+                                </subviews>
+                            </stackView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="1ka-Wm-yY3">
+                                <rect key="frame" x="188.5" y="429.5" width="37" height="37"/>
+                                <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="hZW-Qf-Eh0" secondAttribute="bottom" id="1O2-ml-aC6"/>
-                            <constraint firstItem="hZW-Qf-Eh0" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="N5j-Xz-AzZ"/>
-                            <constraint firstItem="hZW-Qf-Eh0" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="Ogv-MX-wcA"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="hZW-Qf-Eh0" secondAttribute="trailing" id="npW-Q1-OlQ"/>
+                            <constraint firstItem="1ka-Wm-yY3" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="DKc-hi-REc"/>
+                            <constraint firstItem="1ka-Wm-yY3" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="Ldf-fJ-ozE"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="dNF-Ud-wg0" secondAttribute="bottom" id="T6L-de-yYO"/>
+                            <constraint firstItem="dNF-Ud-wg0" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="WTQ-Gd-MNz"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="dNF-Ud-wg0" secondAttribute="trailing" constant="16" id="kOi-pD-Y8R"/>
+                            <constraint firstItem="dNF-Ud-wg0" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="tD8-rv-idx"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Euk-v8-eGO">
+                        <barButtonItem key="backBarButtonItem" title=" " id="jyS-ne-pm0"/>
                         <barButtonItem key="rightBarButtonItem" title="Item" image="location.fill" catalog="system" id="5IT-1Y-bVU">
                             <connections>
                                 <action selector="locationButtonTapped:" destination="BYZ-38-t0r" id="krv-n9-A5W"/>
@@ -46,6 +73,9 @@
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="hZW-Qf-Eh0" id="DMr-LS-rfo"/>
+                        <outlet property="headerTitleLabel" destination="RsM-9D-hZf" id="JsT-bW-yCk"/>
+                        <outlet property="pageControl" destination="fk0-s4-eCE" id="ieK-Q8-9LL"/>
+                        <outlet property="spinner" destination="1ka-Wm-yY3" id="yeB-SN-Kgg"/>
                         <segue destination="Ka8-aw-sts" kind="show" identifier="toDetailViewController" id="UVb-R3-xaa"/>
                     </connections>
                 </viewController>
