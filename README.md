@@ -1,0 +1,3 @@
+# WeatherBuddy
+
+WeatherBuddy is an app for viewing the weekly weather forecast for a user's location. The app utillizes a type of MVVM architecture, whereby most business logic is contained within a ViewModel (WeatherFeedViewModel), with updates communicated to the View (WeatherFeedViewController) via a series of delegate functions. At the model layer, the app uses Swift's Codable protocol to convert response data to Swift models. The UX was somewhat inspired by Apple's weather app and a user can laterally page through daily forecasts. I did not use Cocoapods or any third-party libraries in this project. 
