@@ -20,16 +20,16 @@
                                 <rect key="frame" x="16" y="88" width="382" height="774"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RsM-9D-hZf">
-                                        <rect key="frame" x="0.0" y="0.0" width="382" height="60"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="382" height="72"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="60" id="kxZ-hM-Wv8"/>
+                                            <constraint firstAttribute="height" constant="72" id="kxZ-hM-Wv8"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="hZW-Qf-Eh0">
-                                        <rect key="frame" x="0.0" y="60" width="382" height="670"/>
+                                        <rect key="frame" x="0.0" y="72" width="382" height="658"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Knn-Tf-sYI">
                                             <size key="itemSize" width="128" height="128"/>
@@ -47,7 +47,7 @@
                                     </pageControl>
                                 </subviews>
                             </stackView>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="1ka-Wm-yY3">
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="1ka-Wm-yY3">
                                 <rect key="frame" x="188.5" y="429.5" width="37" height="37"/>
                                 <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </activityIndicatorView>
@@ -65,7 +65,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="Euk-v8-eGO">
                         <barButtonItem key="backBarButtonItem" title=" " id="jyS-ne-pm0"/>
-                        <barButtonItem key="rightBarButtonItem" title="Item" image="location.fill" catalog="system" id="5IT-1Y-bVU">
+                        <barButtonItem key="rightBarButtonItem" image="location" catalog="system" id="5IT-1Y-bVU">
                             <connections>
                                 <action selector="locationButtonTapped:" destination="BYZ-38-t0r" id="krv-n9-A5W"/>
                             </connections>
@@ -90,10 +90,34 @@
                     <view key="view" contentMode="scaleToFill" id="Yjh-4o-VMk">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="bbi-C3-5DL">
+                                <rect key="frame" x="16" y="104" width="382" height="688"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jMd-mn-4F7">
+                                        <rect key="frame" x="166" y="0.0" width="50" height="688"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="QkR-hV-foC"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="bbi-C3-5DL" firstAttribute="centerX" secondItem="Yjh-4o-VMk" secondAttribute="centerX" id="5DP-kn-bur"/>
+                            <constraint firstItem="bbi-C3-5DL" firstAttribute="centerY" secondItem="Yjh-4o-VMk" secondAttribute="centerY" id="RKl-zf-NcP"/>
+                            <constraint firstItem="bbi-C3-5DL" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="QkR-hV-foC" secondAttribute="leading" constant="16" id="d4R-Hf-glK"/>
+                            <constraint firstItem="QkR-hV-foC" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="bbi-C3-5DL" secondAttribute="bottom" constant="16" id="p79-8m-Sbr"/>
+                            <constraint firstItem="bbi-C3-5DL" firstAttribute="top" secondItem="QkR-hV-foC" secondAttribute="top" constant="16" id="s5a-EN-Ftm"/>
+                            <constraint firstItem="QkR-hV-foC" firstAttribute="trailing" secondItem="bbi-C3-5DL" secondAttribute="trailing" constant="16" id="ydg-jM-GCm"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="QuS-vP-8Bm"/>
+                    <connections>
+                        <outlet property="descriptionLabel" destination="jMd-mn-4F7" id="wz8-MO-Yd8"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uW8-Ct-8N1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -107,6 +131,7 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="EBC-bV-zLV">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -119,7 +144,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="location.fill" catalog="system" width="128" height="121"/>
+        <image name="location" catalog="system" width="128" height="121"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

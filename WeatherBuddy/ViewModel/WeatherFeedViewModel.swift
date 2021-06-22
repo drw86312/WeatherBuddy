@@ -9,7 +9,7 @@ import Foundation
 import CoreLocation
 
 protocol WeatherFeedViewModelDelegate: AnyObject {
-    func didUpdateCellModels(models: [WeatherFeedCellDisplayable])
+    func didUpdateCellModels(models: [DailySnapshot])
     func didUpdateHeaderModel(model: WeatherFeedHeaderViewModel)
     func didUpdateFooterModel(model: WeatherFeedFooterViewModel)
     func didUpdatePage(currentPage: Int)
@@ -23,63 +23,71 @@ struct WeatherFeedHeaderViewModel {
 
 struct WeatherFeedFooterViewModel {
     let numberOfPages: Int
-    let currentPage: Int
 }
 
 class WeatherFeedViewModel: NSObject {
     
-    private let geocoder = CLGeocoder()
-    let pageTitle = Strings.pageTitle
+    // ViewModel delegate
     weak var delegate: WeatherFeedViewModelDelegate?
-    private var currentCoordinate: Coordinate?
-    private  var currentPage: Int = 0
     
-    var isLoading: Bool = false {
-        didSet {
-            delegate?.didUpdateLoading(isLoading: isLoading)
-        }
-    }
+    // User Defaults
+    private let userDefaults = UserDefaults.standard
     
-    /*
-     NOTE: In a larger app, I would probably put
-     CoreLocation logic in a LocationManager class so
-     it could be managed across the app.
-     */
-    lazy var locationManager: CLLocationManager = {
+    // Location
+    private let geocoder = CLGeocoder()
+    private lazy var locationManager: CLLocationManager = {
         let locationManager = CLLocationManager()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
         return locationManager
     }()
+    
+    private var coordinate: Coordinate? {
+        get {
+            guard userDefaults.object(forKey: "latitude") != nil &&
+                    userDefaults.object(forKey: "longitude") != nil else {
+                return nil
+            }
+            return Coordinate(latitude: userDefaults.double(forKey: "latitude"),
+                              longitude: userDefaults.double(forKey: "longitude"))
+        }
+    }
 }
 
+// MARK: Public
 extension WeatherFeedViewModel {
     
     func updatePage(index: Int) {
-        if index != currentPage {
-            currentPage = index
-            delegate?.didUpdatePage(currentPage: currentPage)
-        }
+        delegate?.didUpdatePage(currentPage: index)
     }
     
-    func updateCoordinate(_ coordinate: Coordinate) {
-        currentCoordinate = coordinate
-        fetchData()
+    func updateLocation() {
+        updateLocation(with: locationManager.authorizationStatus)
     }
     
-    func fetchData() {
-        guard let coordinate = currentCoordinate else { return }
-        isLoading = true
+    func reloadData() {
+        guard let coordinate = coordinate else { return }
+        getLocationName(coordinate)
+        getFeed(coordinate)
+    }
+}
+
+// MARK: Private
+private extension WeatherFeedViewModel {
+    
+    func getFeed(_ coordinate: Coordinate) {
+        
+        delegate?.didUpdateLoading(isLoading: true)
+        
         WeatherService.feed(coordinate: coordinate) { [weak self] result in
             DispatchQueue.main.async {
-                self?.isLoading = false
+                self?.delegate?.didUpdateLoading(isLoading: false)
                 switch result {
                 case .success(let feed):
                     let models = feed.daily ?? []
                     self?.delegate?.didUpdateCellModels(models: models)
-                    let footerModel = WeatherFeedFooterViewModel(numberOfPages: models.count,
-                                                                 currentPage: self?.currentPage ?? 0)
+                    let footerModel = WeatherFeedFooterViewModel(numberOfPages: models.count)
                     self?.delegate?.didUpdateFooterModel(model: footerModel)
                 case .failure(let error):
                     self?.delegate?.didError(error: error)
@@ -88,7 +96,8 @@ extension WeatherFeedViewModel {
         }
     }
     
-    func getLocationName(for coordinate: Coordinate) {
+    // Get City/Locale name from Coordinate
+    func getLocationName(_ coordinate: Coordinate) {
         let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
         geocoder.reverseGeocodeLocation(location) { [weak self] placemarks, error in
             if error == nil {
@@ -101,31 +110,22 @@ extension WeatherFeedViewModel {
         }
     }
     
-    func updateLocation() {
-        updateLocation(with: locationManager.authorizationStatus)
+    func updateCoordinate(_ coordinate: Coordinate) {
+        cacheCoordinate(coordinate)
+        reloadData()
     }
     
     func cacheCoordinate(_ coordinate: Coordinate) {
-        let defaults = UserDefaults.standard
-        defaults.setValue(coordinate.latitude, forKey: "latitude")
-        defaults.setValue(coordinate.longitude, forKey: "longitude")
+        userDefaults.setValue(coordinate.latitude, forKey: "latitude")
+        userDefaults.setValue(coordinate.longitude, forKey: "longitude")
     }
     
-    func retrieveCachedCoordinate() -> Coordinate? {
-        let defaults = UserDefaults.standard
-        guard defaults.object(forKey: "latitude") != nil && defaults.object(forKey: "longitude") != nil else {
-            return nil
-        }
-        return Coordinate(latitude: defaults.double(forKey: "latitude"),
-                          longitude: defaults.double(forKey: "longitude"))
-    }
-    
-    private func updateLocation(with status: CLAuthorizationStatus) {
+    func updateLocation(with status: CLAuthorizationStatus) {
         switch status {
         case .authorized, .authorizedAlways, .authorizedWhenInUse:
             locationManager.startUpdatingLocation()
         case .notDetermined, .denied, .restricted:
-            // Production might show additional prompt here to allow location permissions
+            // In production, I might show additional prompt here to further request location permissions
             return
         @unknown default:
             return
@@ -139,9 +139,7 @@ extension WeatherFeedViewModel: CLLocationManagerDelegate {
         manager.stopUpdatingLocation()
         guard let location = locations.first else { return }
         let coordinate = Coordinate(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-        getLocationName(for: coordinate)
         updateCoordinate(coordinate)
-        cacheCoordinate(coordinate)
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
@@ -150,11 +148,5 @@ extension WeatherFeedViewModel: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         updateLocation(with: status)
-    }
-}
-
-extension WeatherFeedViewModel {
-    struct Strings {
-        static let pageTitle = NSLocalizedString("Weather Buddy", comment: "Title for weather feed view controller")
     }
 }

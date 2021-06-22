@@ -26,29 +26,28 @@ class WeatherFeedViewController: UIViewController {
     @IBOutlet private weak var headerTitleLabel: UILabel!
     
     private let viewModel = WeatherFeedViewModel()
-    private var cellModels: [WeatherFeedCellDisplayable] = []
+    private var cellModels: [DailySnapshot] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Set page title
+        title = Strings.pageTitle
+
+        // Setup UICollectionView
         configureCollectionView()
 
+        // Make WeatherFeedViewController the delegate of the ViewModel
         viewModel.delegate = self
-        title = viewModel.pageTitle
-        
-        spinner.isHidden = false
-        spinner.hidesWhenStopped = true
 
-        // Attempt to load from cached coordinate on initial load
-        guard let coordinate = viewModel.retrieveCachedCoordinate() else { return }
-        viewModel.updateCoordinate(coordinate)
-        viewModel.getLocationName(for: coordinate)
+        // Attempt to load data with cached coordinate on initial launch
+        viewModel.reloadData()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let identifier = segue.identifier,
               identifier == SegueIdentifier.toDetailViewController.rawValue,
-              let model = sender as? WeatherFeedCellDisplayable,
+              let model = sender as? DailySnapshot,
               let viewController = segue.destination as? WeatherDetailViewController else {
             return
         }
@@ -59,18 +58,27 @@ class WeatherFeedViewController: UIViewController {
         viewModel.updateLocation()
     }
     
-    @objc func refreshData() {
-        viewModel.fetchData()
+    // Pull to refresh
+    @objc private func refreshData() {
+        viewModel.reloadData()
+    }
+    
+    private func presentErrorAlert(error: Error) {
+        let alert = UIAlertController(title: Strings.alertTitle,
+                                      message: Strings.alertMessage,
+                                      preferredStyle: .alert)
+        present(alert, animated: true, completion: nil)
     }
 }
 
+// MARK: CollectionView Configuration
 private extension WeatherFeedViewController {
     
     func configureCollectionView() {
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.collectionViewLayout = generateLayout()
-        collectionView.register(UINib(nibName: "WeatherFeedCollectionCell", bundle: .main),
+        collectionView.register(UINib(nibName: String(describing: WeatherFeedCollectionCell.self), bundle: .main),
                                 forCellWithReuseIdentifier: ViewIdentifier.feedCell.rawValue)
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
@@ -84,25 +92,23 @@ private extension WeatherFeedViewController {
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .paging
+        
+        /*
+        // I don't believe you can use UIScrollViewDelegate with Compositional Layout
+         to calculate the current page, so using visibleItemsInvalidationHandler
+        */
         section.visibleItemsInvalidationHandler = { [weak self] (visibleItems, point, env) -> Void in
             let pageIndex = Int(point.x / (self?.collectionView.frame.size.width ?? 1))
             self?.viewModel.updatePage(index: pageIndex)
         }
         return UICollectionViewCompositionalLayout(section: section)
     }
-    
-    func presentErrorAlert(error: Error) {
-        // Would localize these strings in production app
-        let alert = UIAlertController(title: "Oops, something went wrong",
-                                      message: "Weather currently unavailable",
-                                      preferredStyle: .alert)
-        present(alert, animated: true, completion: nil)
-    }
 }
 
+// MARK: ViewModel
 extension WeatherFeedViewController: WeatherFeedViewModelDelegate {
     
-    func didUpdateCellModels(models: [WeatherFeedCellDisplayable]) {
+    func didUpdateCellModels(models: [DailySnapshot]) {
         cellModels = models
         collectionView.reloadData()
     }
@@ -113,7 +119,6 @@ extension WeatherFeedViewController: WeatherFeedViewModelDelegate {
     
     func didUpdateFooterModel(model: WeatherFeedFooterViewModel) {
         pageControl.numberOfPages = model.numberOfPages
-        pageControl.currentPage = model.currentPage
     }
     
     func didUpdatePage(currentPage: Int) {
@@ -134,6 +139,7 @@ extension WeatherFeedViewController: WeatherFeedViewModelDelegate {
     }
 }
 
+// MARK: UICollectionViewDelegate
 extension WeatherFeedViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -141,6 +147,7 @@ extension WeatherFeedViewController: UICollectionViewDelegate {
     }
 }
 
+// MARK: UICollectionViewDataSource
 extension WeatherFeedViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -149,6 +156,7 @@ extension WeatherFeedViewController: UICollectionViewDataSource {
         
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ViewIdentifier.feedCell.rawValue, for: indexPath) as? WeatherFeedCollectionCell else {
+            // Using assertion failure here to identify critical bugs in development
             assertionFailure("WeatherFeedCollectionCell not found at indexPath \(indexPath)")
             return UICollectionViewCell()
         }
@@ -156,4 +164,15 @@ extension WeatherFeedViewController: UICollectionViewDataSource {
         return cell
     }
 }
+
+// MARK: Localized Strings
+private extension WeatherFeedViewController {
+    // In production, I would localize these strings for different languages
+    struct Strings {
+        static let pageTitle = NSLocalizedString("Weather Buddy", comment: "Title for weather feed view controller")
+        static let alertTitle = NSLocalizedString("Oops, something went wrong", comment: "Title for error alert")
+        static let alertMessage = NSLocalizedString("Weather currently unavailable", comment: "Message for error alert")
+    }
+}
+
 

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DayValue: Codable {
+struct TemperatureDayValue: Codable {
     let day: Double?
     let min: Double?
     let max: Double?
@@ -22,8 +22,8 @@ struct DailySnapshot: Codable {
     let sunset: Date?
     let moonriseTime: Int?
     let moonsetTime: Int?
-    let temperature: DayValue?
-    let feelsLike: DayValue?
+    let temperature: TemperatureDayValue?
+    let feelsLike: TemperatureDayValue?
     let pressure: Int?
     let humidity: Int?
     let dewPoint: Double?
@@ -60,8 +60,8 @@ struct DailySnapshot: Codable {
         sunset = try values.decodeIfPresent(Int.self, forKey: .sunset)?.date
         moonriseTime = try values.decodeIfPresent(Int.self, forKey: .moonriseTime)
         moonsetTime = try values.decodeIfPresent(Int.self, forKey: .moonsetTime)
-        temperature = try values.decodeIfPresent(DayValue.self, forKey: .temperature)
-        feelsLike = try values.decodeIfPresent(DayValue.self, forKey: .feelsLike)
+        temperature = try values.decodeIfPresent(TemperatureDayValue.self, forKey: .temperature)
+        feelsLike = try values.decodeIfPresent(TemperatureDayValue.self, forKey: .feelsLike)
         pressure = try values.decodeIfPresent(Int.self, forKey: .pressure)
         humidity = try values.decodeIfPresent(Int.self, forKey: .humidity)
         dewPoint = try values.decodeIfPresent(Double.self, forKey: .dewPoint)

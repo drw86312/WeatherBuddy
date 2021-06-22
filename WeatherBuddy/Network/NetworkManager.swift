@@ -15,6 +15,8 @@ enum NetworkError: Error {
 
 struct NetworkManager {
     
+    // I made URLSession a parameter for dependency injection and the
+    // ability to make this function unit testable in the future.
     static func request<T: Codable>(endpoint: Endpoint,
                                      modelType: T.Type,
                                      session: URLSession = .shared,
